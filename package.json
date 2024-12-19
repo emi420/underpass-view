@@ -1,0 +1,44 @@
+{
+  "name": "underpass-view",
+  "version": "0.0.1",
+  "private": true,
+  "homepage": "",
+  "author": "Emilio Mariscal <emi.mariscal.dev@gmail.com>",
+  "dependencies": {
+    "maplibre-gl": "^4.3.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "scripts": {
+    "start": "vite",
+    "build": "vite build",
+    "serve": "vite preview",
+    "test": "jest",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "@vitejs/plugin-react": "^4.3.3",
+    "gh-pages": "^6.1.1",
+    "vite": "^5.4.11"
+  }
+}

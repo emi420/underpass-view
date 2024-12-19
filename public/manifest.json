@@ -1,0 +1,8 @@
+{
+  "short_name": "Underpass View",
+  "name": "Small web app for visualizing OSM data in a DB maintained by Underpass.",
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}
