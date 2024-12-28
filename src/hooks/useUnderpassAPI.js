@@ -12,7 +12,7 @@ const useUnderpassAPI = (endpoint, params = {}) => {
     setIsLoading(true);
       setError(null);
       try {
-        if (newParams.area) {
+        if (newParams.area || newParams.osmId) {
           const response = await fetch(`${API_URL}/${endpoint}?${new URLSearchParams(newParams)}`);
           if (!response.ok) throw new Error('Failed to fetch data');
           const result = await response.json();

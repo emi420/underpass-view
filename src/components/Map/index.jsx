@@ -43,7 +43,7 @@ export default function Map({ data, center, onLoad, onMoveEnd }) {
       map.current = new maplibregl.Map({
         container: mapContainer.current,
         center: center.reverse() || [0,0],
-        zoom: 15,
+        zoom: 19,
         style: osm
       });
 
