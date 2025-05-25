@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect } from 'react';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { osm } from './source';
@@ -33,7 +33,7 @@ const getBBoxString = (map) => {
 }
 
 
-export default function Map({ data, center, onLoad, onMoveEnd }) {
+export default function Map({ data, center, onLoad, onMoveEnd, selectedFeature }) {
     const mapContainer = useRef(null);
     const map = useRef(null);
       
@@ -57,26 +57,51 @@ export default function Map({ data, center, onLoad, onMoveEnd }) {
         
         // Data layers
         map.current.addLayer({
+          id: "lines",
+          type: "line",
+          source: "data",
+          paint: {
+            "line-color": [
+                "match",
+                  ["get", "id"],
+                  selectedFeature || -1,
+                  "blue",
+                  "#D63F40"
+            ],
+            'line-width': [
+              "match",
+                ["get", "id"],
+                selectedFeature || -1,
+                5,
+                2
+            ],
+          }
+        });
+        map.current.addLayer({
             'id': 'nodes',
             'type': 'circle',
             'source': 'data',
             'layout': {},
             'paint': {
-                'circle-color': '#D63F40',
-                'circle-radius': 4,
-                'circle-opacity': .5
+                'circle-color': 
+                [
+                "match",
+                  ["get", "id"],
+                  selectedFeature || -1,
+                  "blue",
+                  "#D63F40"
+                ],
+                'circle-radius':
+                [
+                "match",
+                  ["get", "id"],
+                  selectedFeature || -1,
+                  8,
+                  4
+                ]
             }
         });
-        map.current.addLayer({
-          id: "lines",
-          type: "line",
-          source: "data",
-          paint: {
-            "line-color": "#D63F40",
-            'line-width': 2,
-          }
-        });
-        
+
         map.current.on("moveend", () => {
           onMoveEnd && onMoveEnd({ bbox: getBBoxString(map.current), center: map.current.getCenter() });
         });
@@ -84,7 +109,44 @@ export default function Map({ data, center, onLoad, onMoveEnd }) {
         onLoad && onLoad({ bbox: getBBoxString(map.current) });
           
       });
-    }, [data]);
+    }, [data, selectedFeature]);
+
+
+    //Update styles when selectedFeature changes
+    useEffect(() => {
+      if (!map.current || !map.current.getLayer('lines')) return;
+
+      map.current.setPaintProperty("nodes", "circle-color", [
+        "match",
+        ["get", "id"],
+        selectedFeature || -1,
+        "blue",
+        "#D63F40"
+      ]);
+      map.current.setPaintProperty("nodes", "circle-radius", [
+        "match",
+        ["get", "id"],
+        selectedFeature || -1,
+        8,
+        4
+      ]);
+
+      map.current.setPaintProperty("lines", "line-color", [
+        "match",
+        ["get", "id"],
+        selectedFeature || -1,
+        "blue",
+        "#D63F40"
+      ]);
+
+      map.current.setPaintProperty("lines", "line-width", [
+        "match",
+        ["get", "id"],
+        selectedFeature || -1,
+        5,
+        2
+      ]);
+    }, [selectedFeature]);
 
     // Data
     useEffect(() => {

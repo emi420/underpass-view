@@ -1,19 +1,21 @@
-import React from 'react';
 import './App.css';
-import Map from './components/Map/index.jsx'
+import Map from './components/Map/index.jsx';
+import List from './components/List/index.jsx';
 import { useState } from "react";
 import useUnderpassAPI from './hooks/useUnderpassAPI';
 
-const INIT_CENTER = [40.98726802794323, -111.8940771291513]
+const INIT_CENTER = import.meta.env.VITE_INIT_CENTER.split(',').map(Number);
 
 function App() {
 
   const [area, setArea] = useState(null);
   const {data, isLoading, error, fetchData} = useUnderpassAPI("raw/features");
+  
   const [center, setCenter] = useState(INIT_CENTER);
   const [centerValue, setCenterValue] = useState(INIT_CENTER);
   const [osmId, setOsmId] = useState("");
   const [osmIdValue, setOsmIdValue] = useState("");
+  const [selectedFeature, setSelectedFeature] = useState(-1);
 
   const handleMapLoad = ({ bbox }) => {
     setArea(bbox);
@@ -39,6 +41,25 @@ function App() {
     setOsmId(osmIdValue);
   }
 
+  const handleSelectFeature = (feature) => {
+    let coords;
+    // Way or Relation
+    if (feature.properties.osm_type === "way" || feature.properties.osm_type === "relation") {
+      if (feature.geometry.coordinates[0][0].length > 0) {
+        coords = [feature.geometry.coordinates[0][0][0], feature.geometry.coordinates[0][0][1]];
+      } else {
+        coords = [feature.geometry.coordinates[0][0], feature.geometry.coordinates[0][1]];
+      }
+    } else {
+      // Node
+      coords = [feature.geometry.coordinates[0], feature.geometry.coordinates[1]];
+    }
+    setCenter(coords);
+    setOsmId(feature.id);
+    setOsmIdValue(feature.id);
+    setSelectedFeature(feature.id);
+  }
+
   return (
     <div className="app">
       <header className="header">
@@ -49,7 +70,10 @@ function App() {
 
       <div className="data">
         <div className="map">
-          <Map data={data} center={center} onLoad={handleMapLoad} onMoveEnd={handleMapMoveEnd} />
+          <Map selectedFeature={selectedFeature} data={data} center={center} onLoad={handleMapLoad} onMoveEnd={handleMapMoveEnd} />
+        </div>
+        <div className="list">
+          <List onSelectFeature={handleSelectFeature}/>
         </div>
       </div>
     </div>

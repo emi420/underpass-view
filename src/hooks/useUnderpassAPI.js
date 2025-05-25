@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 
-const API_URL = "http://localhost:8000";
+const API_URL = import.meta.env.VITE_API_URL;
 
 const useUnderpassAPI = (endpoint, params = {}) => {
   const [data, setData] = useState(null);
@@ -9,10 +9,10 @@ const useUnderpassAPI = (endpoint, params = {}) => {
 
   // Fetch data from the API
   const fetchData = useCallback(async (newParams = {}) => {
-    setIsLoading(true);
+      setIsLoading(true);
       setError(null);
       try {
-        if (newParams.area || newParams.osmId) {
+        if (newParams.area || newParams.osmId || newParams.order_by || newParams.limit) {
           const response = await fetch(`${API_URL}/${endpoint}?${new URLSearchParams(newParams)}`);
           if (!response.ok) throw new Error('Failed to fetch data');
           const result = await response.json();
