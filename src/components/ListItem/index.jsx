@@ -1,7 +1,7 @@
-function ListItem({ feature, onSelect }) {
 
+function ListItem({ feature, onSelect, selected }) {
     return (
-    <div className="feature">
+    <div className={`feature ${selected ? "selected" : ""}`}>
         {
            <span onClick={e => onSelect(feature)}>
             {feature.properties.osm_type} {feature.id}

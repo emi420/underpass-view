@@ -1,14 +1,20 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import ListItem from '../ListItem';
 import useUnderpassAPI from '../../hooks/useUnderpassAPI';
 
 function List({ onSelectFeature }) {
 
     const {data, isLoading, error, fetchData} = useUnderpassAPI("raw/features");
+    const [selectedFeature, setSelectedFeature] = useState(-1);
 
     useEffect(() => {
-        fetchData({ order_by: "timestamp desc", limit: 15 });
+        fetchData({ order_by: "timestamp desc", limit: 30 });
     }, []);
+
+    const selectFeatureHandler = (feature) => {
+        setSelectedFeature(feature.id);
+        onSelectFeature && onSelectFeature(feature);
+    }
 
     return (
     <div className="featureList">
@@ -16,8 +22,9 @@ function List({ onSelectFeature }) {
         {
             data?.features?.map(feature => (
                 <ListItem
+                    selected={selectedFeature == feature.id}
                     key={feature.id}
-                    onSelect={onSelectFeature}
+                    onSelect={selectFeatureHandler}
                     feature={feature}
                 />
             ))

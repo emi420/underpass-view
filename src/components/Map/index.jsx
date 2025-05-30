@@ -106,6 +106,23 @@ export default function Map({ data, center, onLoad, onMoveEnd, selectedFeature }
           onMoveEnd && onMoveEnd({ bbox: getBBoxString(map.current), center: map.current.getCenter() });
         });
 
+        // On feature click
+        map.current.on("click", "lines",  (e) => {
+          const feature = e.features[0];
+          let coords;
+          if (feature.properties.osm_type === "way" || feature.properties.osm_type === "relation") {
+            if (feature.geometry.coordinates[0][0].length > 0) {
+              coords = [feature.geometry.coordinates[0][0][0], feature.geometry.coordinates[0][0][1]];
+            } else {
+              coords = [feature.geometry.coordinates[0][0], feature.geometry.coordinates[0][1]];
+            }
+          } else {
+            // Node
+            coords = [feature.geometry.coordinates[0], feature.geometry.coordinates[1]];
+          }
+          window.open(`https://osm.org/edit?${feature.properties.osm_type}=${feature.id}#map=20/${coords[1]}/${coords[0]}`)
+        });
+
         onLoad && onLoad({ bbox: getBBoxString(map.current) });
           
       });

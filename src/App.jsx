@@ -63,7 +63,7 @@ function App() {
   return (
     <div className="app">
       <header className="header">
-        <input className="textInput" type="text" onChange={handleOsmIdChange} placeholder="OSM Id" value={osmIdValue} />
+        <input disabled className="textInput" type="text" onChange={handleOsmIdChange} placeholder="OSM Id" value={osmIdValue} />
         <input className="textInput" type="text" onChange={handleCenterChange} placeholder="lat, lon" value={centerValue} />
         <button className="button" onClick={handleSetCenterClick}>Go</button>
       </header>
